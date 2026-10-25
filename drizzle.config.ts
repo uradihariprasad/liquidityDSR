@@ -10,7 +10,7 @@ export default defineConfig({
   dialect: "postgresql",
   schema: "./src/db/schema.ts",
   dbCredentials: {
-    url: process.env.DATABASE_URL ?? "postgresql://postgres:postgres@127.0.0.1:5432/app_db",
+    url: process.env.DATABASE_URL ?? "postgresql://trading_e9kp_user:JkHpR7enrsOYLXAvgMmhuIQvQNzIKkCk@dpg-dbf2vqnavr4c73ckmdv0-a/trading_e9kp",
   },
   strict: true,
   verbose: true,
