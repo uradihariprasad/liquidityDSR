@@ -1,0 +1,35 @@
+# Render Blueprint — deploys the Next.js web service and PostgreSQL database.
+# In Render: New → Blueprint → select this repository.
+
+services:
+  - type: web
+    name: pulsegrid-market-intelligence
+    runtime: node
+    plan: free
+    region: singapore
+    autoDeploy: true
+    buildCommand: npm install --include=dev && npx drizzle-kit push --force && npm run build
+    startCommand: npm run start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: 22.19.0
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: pulsegrid-db
+          property: connectionString
+      # Recommended: set this as a Render secret so it survives deploys and
+      # works across instances. The in-app login box is memory-only by design.
+      - key: UPSTOX_ACCESS_TOKEN
+        sync: false
+
+# Render's free PostgreSQL lifecycle/retention rules may change. Select a paid
+# database plan in production if alert/watchlist/history persistence matters.
+databases:
+  - name: pulsegrid-db
+    plan: free
+    region: singapore
+    databaseName: pulsegrid
+    user: pulsegrid
