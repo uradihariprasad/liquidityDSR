@@ -1,0 +1,145 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #05070a;
+  --color-panel: #0a0d12;
+  --color-panel2: #0e1219;
+  --color-panel3: #131824;
+  --color-line: #1a212c;
+  --color-line2: #242e3c;
+  --color-ink: #d7dee7;
+  --color-ink2: #8b96a5;
+  --color-ink3: #55606f;
+  --color-up: #17c784;
+  --color-updim: #0e5c3f;
+  --color-down: #ea3943;
+  --color-downdim: #5e1f25;
+  --color-warn: #f0b90b;
+  --color-info: #5aa2ff;
+  --color-violet: #a371f7;
+  --color-cyan: #3fd3d3;
+  --font-sans: "Inter", -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+html, body {
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  height: 100%;
+  overflow: hidden;
+}
+
+* { scrollbar-width: thin; scrollbar-color: #232c39 transparent; }
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-thumb { background: #232c39; border-radius: 4px; }
+*::-webkit-scrollbar-track { background: transparent; }
+
+.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+
+.panel-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--color-ink3);
+  font-weight: 600;
+}
+
+.grid-texture {
+  background-image:
+    linear-gradient(rgba(90, 162, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(90, 162, 255, 0.025) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.glow-up { box-shadow: 0 0 22px rgba(23, 199, 132, 0.10); }
+.glow-down { box-shadow: 0 0 22px rgba(234, 57, 67, 0.10); }
+
+@keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+.pulse-dot { animation: pulse-dot 1.6s ease-in-out infinite; }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+.fade-up { animation: fadeUp 0.35s ease-out both; }
+
+@keyframes flashUp { 0% { background: rgba(23,199,132,0.14); } 100% { background: transparent; } }
+@keyframes flashDown { 0% { background: rgba(234,57,67,0.14); } 100% { background: transparent; } }
+.flash-up { animation: flashUp 0.7s ease-out; }
+.flash-down { animation: flashDown 0.7s ease-out; }
+
+.hairline { border-color: var(--color-line); }
+.hairline2 { border-color: var(--color-line2); }
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Responsive terminal shell
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* Avoid iOS zooming form controls while retaining the dense desktop scale. */
+@media (max-width: 639px) {
+  input, select, textarea { font-size: 16px !important; }
+}
+
+.terminal-content,
+.mobile-nav,
+.instrument-toolbar {
+  -webkit-overflow-scrolling: touch;
+}
+
+.mobile-nav {
+  scrollbar-width: none;
+}
+.mobile-nav::-webkit-scrollbar { display: none; }
+
+/* Keep chart canvases and all panels inside their parent grid cell. */
+section,
+.terminal-content > *,
+.terminal-content canvas {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Mobile uses one natural document-like scroll area instead of nested,
+   fixed-height desktop workspaces. The desktop terminal behaviour resumes at
+   lg (1024px). */
+@media (max-width: 1023px) {
+  .terminal-content > .fade-up {
+    height: auto !important;
+    min-height: 100%;
+    overflow: visible !important;
+  }
+
+  .terminal-content section {
+    max-height: none;
+  }
+
+  /* Scrollable panel bodies still work for large tables, but do not trap the
+     page scroll when their content is short. */
+  .terminal-content section > div:last-child {
+    overscroll-behavior: contain;
+  }
+}
+
+/* Portalled token dialog: rendered into document.body so it escapes the
+   header's backdrop-blur containing block (the original bug that pushed it
+   beneath the data panels). Keeps safe-area clearance on notched phones. */
+.upstox-auth-panel {
+  padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Safe-area support for notched phones and installed PWAs. */
+@supports (padding: max(0px)) {
+  .terminal-shell {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* Touch targets for primary controls without inflating tiny status chips. */
+@media (pointer: coarse) {
+  button:not([disabled]) { touch-action: manipulation; }
+  .mobile-nav button { min-height: 44px; }
+}
